@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from './ProductCard';  
 
 const products = [
   {
@@ -25,11 +25,11 @@ const products = [
   },
 ];
 
-const ProductList = () => {
+const ProductList = ({ addToCart }) => {
   return (
     <div style={styles.grid}>
-      {products.map(product => (
-        <ProductCard key={product.id} product={product} />
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} addToCart={addToCart} />
       ))}
     </div>
   );
