@@ -7,14 +7,15 @@ import Cart from './components/Cart';
 import PaymentForm from './components/PaymentForm';
 import Signup from './components/Signup';
 import Login from './components/Login';
-import { addUser, getUsers } from './Users'; // Importamos addUser y getUsers
+import AdminPanel from './components/AdminPanel';
+import { addUser, getUsers } from './Users';
 
 const App = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isPaymentFormVisible, setIsPaymentFormVisible] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [view, setView] = useState('login'); // Alterna entre 'login', 'signup', y 'products'
+  const [view, setView] = useState('login');
 
   const addToCart = (product) => {
     const existingProduct = cartItems.find((item) => item.id === product.id);
@@ -46,10 +47,9 @@ const App = () => {
   };
 
   const handleSignup = (userData) => {
-    console.log('Usuario registrado:', userData);
-    addUser(userData); // Agrega el usuario a la lista en JSON simulado
+    addUser(userData);
     setUser(userData);
-    setView('login'); // Redirige a la ventana de inicio de sesión después del registro
+    setView('login');
   };
 
   const handleLogin = (userData) => {
@@ -57,7 +57,7 @@ const App = () => {
     const existingUser = users.find(
       (user) => user.email === userData.email && user.password === userData.password
     );
-    
+
     if (existingUser) {
       setIsAuthenticated(true);
       setView('products');
@@ -78,7 +78,7 @@ const App = () => {
       <main style={styles.main}>
         {isAuthenticated ? (
           <div>
-            {view === 'products' && (
+            {view === 'products' ? (
               <>
                 <h1>Bienvenido a FoodStore</h1>
                 <ProductList addToCart={addToCart} />
@@ -90,7 +90,9 @@ const App = () => {
                 />
                 {isPaymentFormVisible && <PaymentForm onClose={handleClosePaymentForm} />}
               </>
-            )}
+            ) : view === 'admin' ? (
+              <AdminPanel />
+            ) : null}
             <button onClick={handleLogout} style={styles.logoutButton}>
               Cerrar Sesión
             </button>
@@ -103,6 +105,11 @@ const App = () => {
         {!isAuthenticated && (
           <button onClick={() => setView(view === 'login' ? 'signup' : 'login')} style={styles.switchButton}>
             {view === 'login' ? 'Crear una cuenta' : 'Iniciar Sesión'}
+          </button>
+        )}
+        {isAuthenticated && view === 'products' && (
+          <button onClick={() => setView('admin')} style={styles.adminButton}>
+            Ir al Panel de Administración
           </button>
         )}
       </main>
@@ -135,6 +142,15 @@ const styles = {
     marginTop: '10px',
     padding: '10px 15px',
     backgroundColor: '#4CAF50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  adminButton: {
+    marginTop: '10px',
+    padding: '10px 15px',
+    backgroundColor: '#2196F3',
     color: '#fff',
     border: 'none',
     borderRadius: '5px',
